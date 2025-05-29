@@ -1,4 +1,36 @@
 <script setup>
+  import axios from 'axios';
+import { onMounted } from 'vue';
+
+  
+
+  const handleSignInWithGoogle = async (response) => {
+    const payload = response.credential
+    const server_res = await axios.post('http://localhost:8000/auth/v1/google/', { 'access_token':payload })
+    const user_res = server_res.data;
+    const user = {
+      'email': user_res.email,
+      'full_name': user_res.full_name
+    }
+    if (server_res.status === 200){
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('access', JSON.stringify(user_res.access_token))
+      localStorage.setItem('refresh',  JSON.stringify(user_res.refresh_token))
+    }
+  }
+
+  onMounted(() => {
+    window.google.accounts.id.initialize({
+      client_id:import.meta.env.VITE_CLIENT_ID,
+      callback:handleSignInWithGoogle
+    })
+    window.google.accounts.id.renderButton(
+      document.getElementById('signInDiv'),
+      {
+        theme:'outline', size:'large', text:'continue_with', shape:'circle', width:'280'
+      }
+    )
+  })
 
 </script>
 
@@ -118,6 +150,8 @@
                 </div>
             </div>
 
+            <div id="signInDiv"></div>
+          <!-- 
             <div class="mt-6">
                 <div 
                     id="g_id_onload"
@@ -135,7 +169,7 @@
                     data-shape="rectangular"
                     data-logo_alignment="left">
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Success/Error Messages -->
