@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import axios from 'axios';
 
 const VITE_APP_URL = import.meta.env.VITE_APP_URL
@@ -36,7 +35,7 @@ class AuthServices {
   }
 
   handleError(error) {
-    
+
     if (error.response){
       const { status } = error.response;
       switch (status) {
