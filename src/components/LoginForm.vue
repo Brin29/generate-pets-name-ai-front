@@ -1,12 +1,15 @@
 <script setup>
   import { RouterLink } from 'vue-router';
   import axios from 'axios';
-  import { onMounted, reactive } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
   import router from '..';
   import googleAuth from '../utils/GoogleAuth';
   import AuthServices from '../service/authService';
   
   const authLogin = new AuthServices();
+  const data = ref({});
+  const err = ref("");
+  const loader = ref(false);
 
   const loginUser = reactive({
     email: '',
@@ -14,18 +17,17 @@
   })
 
   const login = async () => {
+    loader.value = true;
     try {
-      const success = await authLogin.loginService(loginUser)
-      if (!success) {
-        console.error("Hubo un error")
-      }
+      const response = await authLogin.loginService(loginUser)
+      data.value = response;
+      router.push({ name: 'Profile' })
     }
     catch (error) {
-      console.error("Hubo otro error")
+      err.value = error;
     }
-
     finally {
-      console.log("Cargando")
+      loader.value = false;
     }
   }
 

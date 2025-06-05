@@ -1,9 +1,39 @@
 <script setup>
   import axios from 'axios';
-  import { onMounted } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
   import { RouterLink } from 'vue-router';
   import router from '..';
   import googleAuth from '../utils/GoogleAuth';
+  import AuthServices from '../service/authService';
+
+  const authRegister = new AuthServices();
+  const data = ref({});
+  const err = ref("");
+  const loader = ref(false);
+
+  const registerUser = reactive({
+    email: '',
+    first_name: '',
+    last_name: '',
+    password: '',
+    password2: ''    
+  })
+
+  const register = async () => {
+    loader.value = true;
+
+    try {
+      const response = await authRegister.registerService(registerUser)
+      data.value = response;
+      router.push({ name: 'Login' })
+    }
+    catch(error){
+      err.value = error;
+    }
+    finally {
+      loader.value = false;
+    }
+  }
 
   const handleSignInWithGoogle = async (response) => {
     if (response.error) {
@@ -47,13 +77,14 @@
       </p>
     </div>
     
-    <form class="mt-8 space-y-6" onsubmit="handleSubmit(event)">
+    <form class="mt-8 space-y-6" @submit.prevent="register">
       <div class="rounded-md shadow-sm space-y-4">
         <div>
           <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
             <input 
               id="firstName" 
-              name="firstName" 
+              name="firstName"
+              v-model="registerUser.first_name"
               type="text" 
               required 
               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
@@ -66,7 +97,8 @@
           <input 
             id="lastName" 
             name="lastName" 
-            type="text" 
+            type="text"
+            v-model="registerUser.last_name"
             required 
             class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
             placeholder="Last Name"
@@ -79,7 +111,8 @@
               id="email" 
               name="email" 
               type="email" 
-              autocomplete="email" 
+              autocomplete="email"
+              v-model="registerUser.email"
               required 
               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
               placeholder="Email address"
@@ -92,7 +125,8 @@
               id="password" 
               name="password" 
               type="password" 
-              autocomplete="new-password" 
+              autocomplete="new-password"
+              v-model="registerUser.password"
               required 
               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
               placeholder="Password"
@@ -100,12 +134,13 @@
         </div>
 
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <label for="password2" class="block text-sm font-medium text-gray-700">Confirm Password</label>
           <input 
-            id="confirmPassword" 
-            name="confirmPassword" 
+            id="password2" 
+            name="password2" 
             type="password" 
-            autocomplete="new-password" 
+            autocomplete="new-password"
+            v-model="registerUser.password2"
             required 
             class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
             placeholder="Confirm Password"
