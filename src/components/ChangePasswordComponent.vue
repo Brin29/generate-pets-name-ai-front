@@ -1,10 +1,34 @@
 <script setup>
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
+import AuthServices from '../service/authService';
 
 const passwordModal = ref(false);
+const err = ref(false);
+const passwordService = new AuthServices();
+const access_token = JSON.parse(localStorage.getItem('access'))
+
+const changePasswordForm = reactive({
+  token: access_token,
+  current_password: '',
+  new_password: '',
+  confirm_new_password: ''
+})
 
 const changePasswordToggle = () => {
   passwordModal.value = !passwordModal.value;
+}
+
+const changePassword = async () => {
+  try{
+    await passwordService.changePasswordService(changePasswordForm);
+    passwordModal.value = false;
+  }
+  catch (error) {
+    err.value = error;
+  }
+  finally {
+    console.log("loader");
+  }
 }
 
 </script>
@@ -21,22 +45,22 @@ const changePasswordToggle = () => {
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
-        <form onsubmit="handlePasswordChange(event)">
+        <form @submit.prevent="changePassword">
           <div class="space-y-4">
             <div>
               <label for="current-password" class="block text-sm font-medium text-gray-700">Current Password</label>
-              <input type="password" id="current-password" name="current-password" required
+              <input type="password" id="current-password" name="current-password" v-model="changePasswordForm.current_password" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <div>
               <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
-              <input type="password" id="new-password" name="new-password" required
+              <input type="password" id="new-password" name="new-password" v-model="changePasswordForm.new_password" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <div>
               <label for="confirm-new-password" class="block text-sm font-medium text-gray-700">Confirm New
                 Password</label>
-              <input type="password" id="confirm-new-password" name="confirm-new-password" required
+              <input type="password" id="confirm-new-password" name="confirm-new-password" v-model="changePasswordForm.confirm_new_password" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
           </div>

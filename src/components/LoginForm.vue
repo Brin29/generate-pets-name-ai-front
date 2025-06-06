@@ -7,7 +7,6 @@ import googleAuth from '../utils/GoogleAuth';
 import AuthServices from '../service/authService';
 
 const authLogin = new AuthServices();
-const data = ref({});
 const err = ref("");
 const loader = ref(false);
 
@@ -19,9 +18,7 @@ const loginUser = reactive({
 const login = async () => {
   loader.value = true;
   try {
-    const response = await authLogin.loginService(loginUser)
-    data.value = response;
-    router.push({ name: 'Profile' })
+    await authLogin.loginService(loginUser)
   }
   catch (error) {
     err.value = error;

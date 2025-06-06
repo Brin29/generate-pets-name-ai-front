@@ -74,7 +74,7 @@ onMounted(async () => {
             <div class="flex items-center justify-between">
               <div>
                 <h4 class="text-sm font-medium text-gray-900">Password</h4>
-                <p class="text-sm text-gray-500">Last changed 3 months ago</p>
+                <p class="text-sm text-gray-500">Change your password</p>
               </div>
               <div v-if="data.auth_provider !== 'google'">
                 <ChangePasswordComponent />
@@ -100,7 +100,7 @@ onMounted(async () => {
           <div class="px-6 py-6 space-y-4">
             <div class="flex justify-between">
               <span class="text-sm text-gray-500">Account Status</span>
-              <div v-if="data.auth_provider == 'google'">
+              <div v-if="data.is_active">
                 <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Active
@@ -136,7 +136,7 @@ onMounted(async () => {
                 </svg>
                 <span class="text-sm font-medium text-gray-900">Google</span>
               </div>
-              <div v-if="data.is_active">
+              <div v-if="data.auth_provider == 'google'">
                 <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Connected

@@ -1,8 +1,13 @@
 import axios from 'axios';
+import router from '..';
 
 const VITE_APP_URL = import.meta.env.VITE_APP_URL
 
 class AuthServices {
+
+  getToken(){
+    return JSON.parse(localStorage.getItem('access'))
+  }
 
   async loginService(authUser){
     try {
@@ -12,10 +17,21 @@ class AuthServices {
         { withCredentials: true }
       );
 
-      return response.data
+      const user_res = response.data;
+      const user = {
+        'email': user_res.email,
+        'full_name': user_res.full_name
+      }
+
+      if (response.status === 200){
+        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('access', JSON.stringify(user_res.access_token))
+        localStorage.setItem('refresh', JSON.stringify(user_res.refresh_token))
+        router.push({ name: 'Profile' })
+      }
     }
     catch(error){
-      throw this.handleError(error);
+      throw this.handleAuthError(error);
     }
   }
 
@@ -30,11 +46,31 @@ class AuthServices {
       return response.data
     }
     catch(error) {
-      throw this.handleError(error);
+      throw this.handleAuthError(error);
     }
   }
 
-  handleError(error) {
+  async changePasswordService(passwordForm){
+    try {
+      const response = await axios.patch(
+        `${VITE_APP_URL}/change-password/`,
+        passwordForm,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.getToken()}`
+          }
+        }
+      )
+    }
+
+    catch(error) {
+      throw this.handleAuthError(error);
+    }
+
+  }
+
+  handleAuthError(error) {
 
     if (error.response){
       const { status } = error.response;

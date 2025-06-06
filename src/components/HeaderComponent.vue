@@ -1,15 +1,25 @@
 <script setup>
+import axios from 'axios';
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
 const user = ref({})
 const showDropdown = ref(false)
+const signOutModal = ref(false);
 
 user.value = JSON.parse(localStorage.getItem('user'))
 
 const toggleDropdwon = () => {
   showDropdown.value = !showDropdown.value;
 }
+
+const signOutToggle = () => {
+  signOutModal.value = !signOutModal.value
+}
+
+const signOut = () => {
+}
+
 
 </script>
 
@@ -49,20 +59,20 @@ const toggleDropdwon = () => {
         <!-- User Menu -->
         <div class="flex items-center space-x-4">
 
-
           <!-- User Profile Dropdown -->
           <div @click="toggleDropdwon" class="relative">
-            <button 
+            <button
               class="flex items-center space-x-2 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              <span class="hidden md:block text-gray-700 font-medium">{{ user.full_name || user.first_name + user.last_name }}</span>
+              <span class="hidden md:block text-gray-700 font-medium">{{ user.full_name || user.first_name +
+                user.last_name }}</span>
               <svg class="hidden md:block w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
             <!-- User Dropdown Menu -->
-            <div id="user-dropdown" 
-              v-if="showDropdown" class="absolute right-0 mt-2 w-68 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+            <div id="user-dropdown" v-if="showDropdown"
+              class="absolute right-0 mt-2 w-68 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
               <div class="py-1">
                 <div class="px-4 py-2 border-b border-gray-200">
                   <p class="text-sm font-medium text-gray-900">{{ user.full_name }}</p>
@@ -76,14 +86,14 @@ const toggleDropdwon = () => {
                   View Profile
                 </RouterLink>
                 <div class="border-t border-gray-200"></div>
-                <a href="#" onclick="logout()"
-                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <button @click="signOutToggle"
+                  class="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <svg class="mr-3 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                   Sign out
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -145,4 +155,26 @@ const toggleDropdwon = () => {
       </div>
     </nav>
   </header>
+
+  <div v-if="!signOutModal" id="exit-modal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Are you sure you want to leave?</h3>
+        <p class="text-sm text-gray-600 mb-6">
+          If you leave now, any unsaved information will be lost. Do you want to continue?
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button @click="signOutToggle"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            Cancel
+          </button>
+          <button @click="confirmExit"
+            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+            Leave
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
