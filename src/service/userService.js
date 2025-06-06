@@ -1,4 +1,4 @@
-import axios from "axios"
+import axiosInstance from "./axiosInstance";
 
 const VITE_APP_URL = import.meta.env.VITE_APP_URL
 
@@ -10,7 +10,7 @@ class UserServices {
 
   async myUserService(){
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${VITE_APP_URL}/profile/`,
         {
           headers: {

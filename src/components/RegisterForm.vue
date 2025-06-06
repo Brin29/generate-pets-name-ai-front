@@ -18,7 +18,7 @@ const registerUser = reactive({
   password: '',
   password2: ''
 })
-
+  
 const register = async () => {
   loader.value = true;
 

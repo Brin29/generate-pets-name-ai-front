@@ -1,5 +1,6 @@
 import axios from 'axios';
 import router from '..';
+import axiosInstance from './axiosInstance';
 
 const VITE_APP_URL = import.meta.env.VITE_APP_URL
 
@@ -42,7 +43,6 @@ class AuthServices {
         authUser,
         { withCredentials: true }
       );
-
       return response.data
     }
     catch(error) {
@@ -52,22 +52,27 @@ class AuthServices {
 
   async changePasswordService(passwordForm){
     try {
-      const response = await axios.patch(
-        `${VITE_APP_URL}/change-password/`,
-        passwordForm,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.getToken()}`
-          }
-        }
-      )
+      await axiosInstance.patch(`/change-password/`, passwordForm,)
     }
-
     catch(error) {
       throw this.handleAuthError(error);
     }
+  }
 
+  async logoutService(refresh){
+    try {
+      const response = await axiosInstance.post(`/logout/`, refresh)
+      
+      if (response.status === 200){
+        localStorage.removeItem('access')
+        localStorage.removeItem('refresh')
+        localStorage.removeItem('user')
+        router.push({name: 'Login'})
+      }
+    }
+    catch(error){
+      throw this.handleAuthError(error);
+    }
   }
 
   handleAuthError(error) {

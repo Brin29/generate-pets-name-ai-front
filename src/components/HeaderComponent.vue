@@ -1,11 +1,13 @@
 <script setup>
-import axios from 'axios';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import AuthServices from '../service/authService';
 
+const signOut = new AuthServices();
 const user = ref({})
 const showDropdown = ref(false)
 const signOutModal = ref(false);
+const token = JSON.parse(localStorage.getItem('refresh'))
 
 user.value = JSON.parse(localStorage.getItem('user'))
 
@@ -17,10 +19,14 @@ const signOutToggle = () => {
   signOutModal.value = !signOutModal.value
 }
 
-const signOut = () => {
+const handleLogout = async () => {
+  try {
+    await signOut.logoutService({'refresh_token': token})
+  }
+  catch(error){
+    console.log(error)
+  }
 }
-
-
 </script>
 
 <template>
@@ -86,14 +92,16 @@ const signOut = () => {
                   View Profile
                 </RouterLink>
                 <div class="border-t border-gray-200"></div>
+
                 <button @click="signOutToggle"
-                  class="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  class="cursor-pointer w-[100%] flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <svg class="mr-3 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
+                  </svg> 
                   Sign out
                 </button>
+
               </div>
             </div>
           </div>
@@ -156,7 +164,7 @@ const signOut = () => {
     </nav>
   </header>
 
-  <div v-if="!signOutModal" id="exit-modal"
+  <div v-if="signOutModal" id="exit-modal"
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
@@ -169,7 +177,7 @@ const signOut = () => {
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
             Cancel
           </button>
-          <button @click="confirmExit"
+          <button @click="handleLogout"
             class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
             Leave
           </button>
