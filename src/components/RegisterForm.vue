@@ -23,9 +23,7 @@ const register = async () => {
   loader.value = true;
 
   try {
-    const response = await authRegister.registerService(registerUser)
-    data.value = response;
-    router.push({ name: 'Login' })
+    await authRegister.registerService(registerUser)
   }
   catch (error) {
     err.value = error;

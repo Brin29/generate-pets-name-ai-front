@@ -43,7 +43,16 @@ class AuthServices {
         authUser,
         { withCredentials: true }
       );
-      return response.data
+
+      const user_data = response.data;
+      const email = user_data.email
+
+      console.log(email)
+
+      if (response.status === 201){
+        localStorage.setItem('email', JSON.stringify(email))
+        router.push({ name: 'VerifyEmail'})
+      }
     }
     catch(error) {
       throw this.handleAuthError(error);

@@ -1,27 +1,29 @@
 <script setup>
-import axios from 'axios';
+  import { ref } from 'vue';
 
-// import axios from 'axios';
-    
-const VITE_APP_URL = import.meta.env.VITE_APP_URL
-      
-const sendOtp = async () => {
-  try{
-    const response = await axios.post(`http://localhost:8000/auth/v1/verify-email/`, {otp:'385129'})
-    
-    if (response.status === 200){
-      console.log('Funciona')
-    }
-  }
-  catch (err) {
-    console.error(err)
-  }
-}
+  const user = JSON.parse(localStorage.getItem('user'))
+  const username = ref(user.email);
+  console.log(username)
+
 </script>
 
 <template>
-  <form @submit.prevent="sendOtp">
-    <input type="text">
-    <button type="submit">Enviar</button>
-  </form>
+  <div class="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <div class="mx-auto h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+          Verify Your Account
+        </h2>
+        <p class="mt-2 text-sm text-gray-600">
+          We've sent a verification code to
+          <span class="font-medium text-gray-900">{{ username }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
