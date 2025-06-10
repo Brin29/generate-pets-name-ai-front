@@ -22,7 +22,7 @@ const registerUser = reactive({
 const register = async () => {
   loader.value = true;
 
-  try {
+  try { 
     await authRegister.registerService(registerUser)
   }
   catch (error) {

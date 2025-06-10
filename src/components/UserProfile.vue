@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import UserServices from "../service/userService";
 import HeaderComponent from "./HeaderComponent.vue";
 import ChangePasswordComponent from "./ChangePasswordComponent.vue";
@@ -12,17 +12,27 @@ const err = ref("");
 onMounted(async () => {
   try {
     const response = await userService.myUserService();
-    console.log(response);
+    console.log(response)
     data.value = response;
   } catch (error) {
     err.value = error;
   }
 });
 
+
 const editToggle = () => {
   editEnabled.value = !editEnabled.value
 }
 
+const editUser = async () => {
+  try{
+    await userService.editUserService(data);
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+ 
 </script>
 
 <template>
@@ -63,7 +73,7 @@ const editToggle = () => {
             </h3>
           </div>
           <div class="px-6 py-6">
-            <form id="profile-form" onsubmit="saveProfile(event)">
+            <form id="profile-form" @submit.prevent="editUser">
               <div v-if="!editEnabled" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label

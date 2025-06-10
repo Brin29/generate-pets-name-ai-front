@@ -1,6 +1,7 @@
+import { jwtDecode } from "jwt-decode";
 import axiosInstance from "./axiosInstance";
 
-const VITE_APP_URL = import.meta.env.VITE_APP_URL
+const VITE_APP_URL = import.meta.env.VITE_APP_URL;
 
 class UserServices {
 
@@ -11,7 +12,7 @@ class UserServices {
   async myUserService(){
     try {
       const response = await axiosInstance.get(
-        `${VITE_APP_URL}/profile/`,
+        `/profile/`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -20,6 +21,27 @@ class UserServices {
         }
       )
       return response.data;
+    }
+    catch(error){
+      throw new Error(error);
+    }
+  }
+
+
+  async editUserService(data_user){
+    const user = jwtDecode(this.getToken())
+    const user_id = user.user_id
+    try{
+      await axiosInstance.patch(
+        `/edit/${user_id}/`, 
+        data_user,
+        {
+          headers: {
+            'Content-Type':'Application/json',
+            'Authorization':`Bearer ${this.getToken()}`
+          }
+        }
+      )
     }
     catch(error){
       throw new Error(error);

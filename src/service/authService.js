@@ -43,14 +43,9 @@ class AuthServices {
         authUser,
         { withCredentials: true }
       );
-
-      const user_data = response.data;
-      const email = user_data.email
-
-      console.log(email)
-
+      
       if (response.status === 201){
-        localStorage.setItem('email', JSON.stringify(email))
+        localStorage.setItem('user', JSON.stringify(authUser))
         router.push({ name: 'VerifyEmail'})
       }
     }
@@ -81,6 +76,20 @@ class AuthServices {
     }
     catch(error){
       throw this.handleAuthError(error);
+    }
+  }
+
+  async otpService(otp){
+    try{
+      const response = await axios.post(`${VITE_APP_URL}/verify-email/`, otp)
+
+      if (response.status === 200){
+        router.push({ name: 'Login' })
+      }
+
+    }
+    catch(error){
+      throw new Error(error);
     }
   }
 
