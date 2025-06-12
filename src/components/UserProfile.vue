@@ -19,14 +19,14 @@ onMounted(async () => {
   }
 });
 
-
 const editToggle = () => {
   editEnabled.value = !editEnabled.value
 }
 
 const editUser = async () => {
   try{
-    await userService.editUserService(data);
+    await userService.editUserService(data.value);
+    editEnabled.value = false;
   }
   catch(error){
     console.log(error)

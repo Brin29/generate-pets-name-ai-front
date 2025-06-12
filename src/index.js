@@ -6,6 +6,8 @@ import HomeComponent from "./components/HomeComponent.vue";
 import GeneratePetsName from "./components/GeneratePetsName.vue";
 import ResponsePetsName from "./components/ResponsePetsName.vue";
 import VerifyEmail from "./components/VerifyEmail.vue";
+import ResetPassword from "./components/ResetPassword.vue"
+import ForgetPassword from "./components/ForgetPassword.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +46,16 @@ const router = createRouter({
       path: '/verify-email',
       name: 'VerifyEmail',
       component: VerifyEmail
+    },
+    {
+      path: '/forget-password',
+      name: 'ForgetPassword',
+      component: ForgetPassword
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: ResetPassword
     }
   ]
 })
