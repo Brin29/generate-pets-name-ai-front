@@ -1,6 +1,7 @@
 import axios from 'axios';
 import router from '..';
 import axiosInstance from './axiosInstance';
+import { useRoute } from 'vue-router';
 
 const VITE_APP_URL = import.meta.env.VITE_APP_URL
 
@@ -8,6 +9,14 @@ class AuthServices {
 
   getToken(){
     return JSON.parse(localStorage.getItem('access'))
+  }
+
+  getUid(){
+    return useRoute().params.uid
+  }
+
+  getUrlToken(){
+    return useRoute().params.token
   }
 
   async loginService(authUser){
@@ -89,7 +98,26 @@ class AuthServices {
 
     }
     catch(error){
-      throw new Error(error);
+      throw this.handleAuthError(error);
+    }
+  }
+
+  async forgetPassword(email){
+    try{
+      await axios.post(`${VITE_APP_URL}/password-reset/`, email)
+    }
+    catch(error){
+      throw this.handleAuthError(error);
+    }
+  }
+
+  async resetPassword(password){
+    try {
+      axios.patch(`${VITE_APP_URL}/set-new-password/`, password);
+      router.push({name:'Login'})
+    }
+    catch(error){
+      throw this.handleAuthError(error);
     }
   }
 
