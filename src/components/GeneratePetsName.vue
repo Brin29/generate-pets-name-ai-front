@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import FooterComponent from './FooterComponent.vue';
-import HeaderComponent from './HeaderComponent.vue';
-  import { reactive } from 'vue';
+  import FooterComponent from './FooterComponent.vue';
+  import HeaderComponent from './HeaderComponent.vue';
+  import { reactive, ref } from 'vue';
+  import PetsNameService from '../service/petsNameService'
 
-  const generate_pets_names = reactive({
+  const petsNameService = new PetsNameService()
+
+  const petData = reactive({
     pet_type: "",
     gender: "",
     size: "",
@@ -12,10 +15,14 @@ import HeaderComponent from './HeaderComponent.vue';
     name_preferences: []
   })
 
-  const handleSubmit = () => {
-    console.log(generate_pets_names)
+  const handleSubmit = async () => {
+    try{
+      await petsNameService.sendInfo(petData);
+    }
+    catch(error){
+      console.log(error);
+    }
   }
-
 </script>
 
 <template>
@@ -39,7 +46,7 @@ import HeaderComponent from './HeaderComponent.vue';
             <label for="petType" class="block text-sm font-medium text-gray-700 mb-2">
               What type of pet do you have?
             </label>
-            <select v-model="generate_pets_names.pet_type" id="petType" name="petType" required
+            <select v-model="petData.pet_type" id="petType" name="petType" required
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">Select pet type</option>
               <option value="dog">Dog</option>
@@ -58,7 +65,7 @@ import HeaderComponent from './HeaderComponent.vue';
             <label for="petGender" class="block text-sm font-medium text-gray-700 mb-2">
               Gender
             </label>
-            <select v-model="generate_pets_names.gender" id="petGender" name="petGender"
+            <select v-model="petData.gender" id="petGender" name="petGender"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">Any</option>
               <option value="male">Male</option>
@@ -72,7 +79,7 @@ import HeaderComponent from './HeaderComponent.vue';
             <label for="petSize" class="block text-sm font-medium text-gray-700 mb-2">
               Size
             </label>
-            <select v-model="generate_pets_names.size" id="petSize" name="petSize"
+            <select v-model="petData.size" id="petSize" name="petSize"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">Any size</option>
               <option value="tiny">Tiny</option>
@@ -88,7 +95,7 @@ import HeaderComponent from './HeaderComponent.vue';
             <label for="nameStyle" class="block text-sm font-medium text-gray-700 mb-2">
               Name Style
             </label>
-            <select v-model="generate_pets_names.name_style" id="nameStyle" name="nameStyle"
+            <select v-model="petData.name_style" id="nameStyle" name="nameStyle"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">Any style</option>
               <option value="classic">Classic</option>
@@ -107,7 +114,7 @@ import HeaderComponent from './HeaderComponent.vue';
           <label for="petDescription" class="block text-sm font-medium text-gray-700 mb-2">
             Describe your pet (optional)
           </label>
-          <textarea v-model="generate_pets_names.description" id="petDescription" name="petDescription" rows="3"
+          <textarea v-model="petData.description" id="petDescription" name="petDescription" rows="3"
             placeholder="Tell us about your pet's personality, appearance, or any special traits..."
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"></textarea>
         </div>
@@ -119,42 +126,42 @@ import HeaderComponent from './HeaderComponent.vue';
           </label>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="short"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="short"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Short names</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="long"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="long"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Long names</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="human"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="human"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Human names</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="nature"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="nature"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Nature-inspired</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="food"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="food"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Food names</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="mythology"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="mythology"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Mythology</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="celebrity"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="celebrity"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">Celebrity names</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
-              <input v-model="generate_pets_names.name_preferences" type="checkbox" name="preferences" value="international"
+              <input v-model="petData.name_preferences" type="checkbox" name="preferences" value="international"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
               <span class="text-sm text-gray-700">International</span>
             </label>

@@ -80,7 +80,7 @@ class AuthServices {
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
         localStorage.removeItem('user')
-        router.push({name: 'Login'})
+        router.push({ name: 'Login' })
       }
     }
     catch(error){
