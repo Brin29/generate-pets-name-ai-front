@@ -1,0 +1,170 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"content\": {{ $json.content }}\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        0
+      ],
+      "id": "a0ee79ae-853f-4b8c-88f4-d9233e2c412f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=generate a list of minimum 10 pets name with this specifications\npet_name: {{ $json.body.pet_type }}\ngender: {{ $json.body.gender }}\nsize: {{ $json.body.size }}\nname_style: {{ $json.body.name_style }}\nname_preferences: {{ $json.body.name_preferences }} ",
+        "hasOutputParser": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        620,
+        0
+      ],
+      "id": "9aef3e48-65a6-4e01-8069-b2c136c3e904",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        260
+      ],
+      "id": "9a2661c4-84f3-4352-a9ae-abe7e97aee9e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "iynBzdEl03dIssKY",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n \"response\": [\n  {\n  \"pet_name\": \"Buddy\",\n  \"small_meaning\": \"Friend\",\n  \"origin\": \"american\",\n  \"popularity_percentage_number\": \"90%\",\n  \"name_style\": [\"classic\", \"cute\", \"friendly\"]\n}\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        860,
+        240
+      ],
+      "id": "e3fa13c6-c66b-4716-a844-3e85ce983981",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pets_name",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "=hola",
+          "ignoreBots": false
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        340,
+        0
+      ],
+      "id": "0dece90a-0c25-4931-ad23-1dce69ed10d4",
+      "name": "Webhook",
+      "webhookId": "2466045c-78b7-4b19-8e04-3b9e23efdb46"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.first().json.output.response\n\nreturn {\n  json: {\n    content: JSON.stringify(items.map(item => item))\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        0
+      ],
+      "id": "cf4a5e54-e85e-4e72-b707-4ec8298dc38a",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f48eb9bc-367f-4d00-bb6c-42b4ad7c8366",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80e4a599b962071f3205ec7df2c79318f0dd63dd59274e7af2381d647cdcbb0c"
+  },
+  "id": "gr35Z89ugy4HX1kN",
+  "tags": []
+}

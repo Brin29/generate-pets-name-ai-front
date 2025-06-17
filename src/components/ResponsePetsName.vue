@@ -85,17 +85,17 @@
           <!-- Style Tags -->
           <div class="flex flex-wrap gap-1 mb-4">
             <span
-              v-for="(style, index) in nameData.style.slice(0, 2)"
+              v-for="(style, index) in nameData.name_style.slice(0, 2)"
               :key="index"
               :class="['px-2 py-1 rounded-full text-xs font-medium', getStyleBadgeColor(style)]"
             >
               {{ style }}
             </span>
             <span
-              v-if="nameData.style.length > 2"
+              v-if="nameData.name_style.length > 2"
               class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600"
             >
-              +{{ nameData.style.length - 2 }}
+              +{{ nameData.name_style.length - 2 }}
             </span>
           </div>
         </div>
@@ -143,7 +143,8 @@ const favorites = ref([])
 const petsNames = JSON.parse(localStorage.getItem('petsName'))
 
 // const mockNames = 
-const mockNames = petsNames
+console.log(petsNames)
+const mockNames = petsNames.content
 
 // Computed properties
 const filteredNames = computed(() => {
@@ -154,26 +155,26 @@ const filteredNames = computed(() => {
     const search = searchTerm.value.toLowerCase()
     filtered = filtered.filter(
       (name) =>
-        name.name.toLowerCase().includes(search) ||
-        name.meaning?.toLowerCase().includes(search) ||
+        name.pet_name.toLowerCase().includes(search) ||
+        name.small_meaning?.toLowerCase().includes(search) ||
         name.origin?.toLowerCase().includes(search)
     )
   }
 
   // Apply style filter
   if (filterBy.value !== 'all') {
-    filtered = filtered.filter((name) => name.style.includes(filterBy.value))
+    filtered = filtered.filter((name) => name.name_style.includes(filterBy.value))
   }
 
   // Apply sorting
   filtered.sort((a, b) => {
     switch (sortBy.value) {
       case 'popularity':
-        return b.popularity - a.popularity
+        return b.popularity_percentage_number - a.popularity_percentage_number
       case 'style':
-        return a.style[0].localeCompare(b.style[0])
+        return a.name_style[0].localeCompare(b.name_style[0])
       default:
-        return a.name.localeCompare(b.name)
+        return a.pet_name.localeCompare(b.pet_name)
     }
   })
 
