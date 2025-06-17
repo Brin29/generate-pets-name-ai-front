@@ -13,4 +13,6 @@ Este es el frontend del proyecto **Generador de Nombres para Mascotas**, desarro
    ```bash
    git clone https://github.com/tu_usuario/petname-generator-frontend.git
    cd petname-generator-frontend
-   ´´´ 
+   ```
+
+2.
